@@ -168,7 +168,10 @@ async function startServer() {
   // API Routes
   app.post("/api/verify-password", (req, res) => {
     const { password } = req.body;
-    const sitePassword = (process.env.SITE_PASSWORD || "180919").trim();
+    // Explicitly default to 180919 if SITE_PASSWORD is not provided or is empty
+    const envPassword = process.env.SITE_PASSWORD;
+    const sitePassword = (envPassword && envPassword.trim() !== "") ? envPassword.trim() : "180919";
+    
     if (password && password.trim() === sitePassword) {
       res.json({ success: true });
     } else {
