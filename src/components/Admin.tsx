@@ -1,14 +1,15 @@
 import React, { useState, useEffect, FormEvent } from "react";
 import { Project, Category } from "../types";
 import { api } from "../services/api";
-import { CATEGORIES } from "../constants";
-import { Plus, Edit2, Trash2, X, Save, Lock } from "lucide-react";
+import { CATEGORIES as INITIAL_CATEGORIES } from "../constants";
+import { Plus, Edit2, Trash2, X, Save, Lock, Folder, LayoutGrid, ChevronRight } from "lucide-react";
 
 export default function Admin() {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [categories, setCategories] = useState<Category[]>(INITIAL_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [editingProject, setEditingProject] = useState<Partial<Project> | null>(null);
   const [isAdding, setIsAdding] = useState(false);
@@ -41,6 +42,11 @@ export default function Admin() {
       console.log("Projects loaded:", data);
       if (Array.isArray(data)) {
         setProjects(data);
+        
+        // Extract unique categories from projects if they are not in INITIAL_CATEGORIES
+        const projectCategories = Array.from(new Set(data.map(p => p.category)));
+        const allCategories = Array.from(new Set([...INITIAL_CATEGORIES, ...projectCategories]));
+        setCategories(allCategories as Category[]);
       } else {
         console.error("API returned non-array data:", data);
         setProjects([]);
@@ -75,9 +81,14 @@ export default function Admin() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Are you sure?")) {
-      await api.deleteProject(id);
-      loadProjects();
+    if (confirm("Are you sure you want to delete this project?")) {
+      try {
+        await api.deleteProject(id);
+        loadProjects();
+      } catch (error) {
+        console.error("Delete failed:", error);
+        alert("Failed to delete project.");
+      }
     }
   };
 
@@ -107,6 +118,15 @@ export default function Admin() {
   const filteredProjects = (projects || []).filter(p => 
     p && (selectedCategory === "All" || p.category === selectedCategory)
   );
+
+  // Group projects by category for the "All" view
+  const groupedProjects: Record<string, Project[]> = categories.reduce((acc, cat) => {
+    const catProjects = projects.filter(p => p.category === cat);
+    if (catProjects.length > 0) {
+      acc[cat] = catProjects;
+    }
+    return acc;
+  }, {} as Record<string, Project[]>);
 
   if (renderError) {
     return (
@@ -166,12 +186,16 @@ export default function Admin() {
   }
 
   return (
-    <div className="min-h-screen pt-40 px-6 pb-24 max-w-7xl mx-auto bg-white">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-16">
+    <div className="min-h-screen pt-40 px-6 pb-24 max-w-7xl mx-auto bg-white font-sans">
+      {/* Header Section */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-20">
         <div>
-          <h1 className="text-[51px] font-black leading-none mb-4 tracking-tight">Manage Portfolio</h1>
-          <div className="flex items-center gap-4">
-            <span className="text-[10px] uppercase font-bold opacity-40 tracking-widest">Dashboard</span>
+          <h1 className="text-[64px] font-black leading-none mb-4 tracking-tight">Manage Portfolio</h1>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <LayoutGrid size={14} className="opacity-40" />
+              <span className="text-[10px] uppercase font-bold opacity-40 tracking-widest">Dashboard</span>
+            </div>
             <button 
               onClick={handleLogout}
               className="text-[10px] uppercase font-bold opacity-20 hover:opacity-100 transition-opacity tracking-widest"
@@ -180,86 +204,106 @@ export default function Admin() {
             </button>
           </div>
         </div>
-        <div className="flex items-center gap-4 w-full md:w-auto">
-          <div className="relative flex-1 md:flex-none">
-            <select 
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full md:w-48 bg-white border border-black/10 px-6 py-4 rounded-2xl font-bold text-sm focus:outline-none focus:border-black appearance-none cursor-pointer"
-            >
-              <option value="All">All Categories</option>
-              {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
-              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M1 1L6 6L11 1" stroke="black" strokeWidth="2" strokeLinecap="round"/>
-              </svg>
-            </div>
-          </div>
-          <button
-            onClick={() => {
-              setEditingProject({
-                title: "",
-                category: "Logo Design",
-                thumbnail: "",
-                description: "",
-                client: "",
-                needs: "",
-                solution: "",
-                colorPalette: ["#000000", "#FFFFFF"],
-                typography: [""],
-                images: []
-              });
-              setIsAdding(true);
-            }}
-            className="flex items-center gap-2 bg-black text-white px-8 py-4 rounded-2xl font-bold hover:opacity-80 transition-all active:scale-[0.98] whitespace-nowrap shadow-lg shadow-black/10"
-          >
-            <Plus size={20} /> Add Project
-          </button>
-        </div>
+        
+        <button
+          onClick={() => {
+            setEditingProject({
+              title: "",
+              category: categories[0] || "Logo Design",
+              thumbnail: "",
+              description: "",
+              client: "",
+              needs: "",
+              solution: "",
+              colorPalette: ["#000000", "#FFFFFF"],
+              typography: [""],
+              images: []
+            });
+            setIsAdding(true);
+          }}
+          className="flex items-center gap-3 bg-black text-white px-10 py-5 rounded-[24px] font-bold hover:opacity-80 transition-all active:scale-[0.98] whitespace-nowrap shadow-2xl shadow-black/10"
+        >
+          <Plus size={24} /> Add New Project
+        </button>
       </div>
 
-      <div className="space-y-6">
-        {filteredProjects.length === 0 ? (
-          <div className="py-32 text-center bg-brand-gray rounded-[32px] border-2 border-dashed border-black/5">
-            <p className="opacity-40 font-bold uppercase text-xs tracking-widest">No projects found in this category</p>
-          </div>
-        ) : (
-          filteredProjects.map((p) => (
-            <div key={p.id} className="bg-white p-8 rounded-[32px] border border-black/5 flex items-center justify-between group hover:shadow-xl transition-all duration-300">
-              <div className="flex items-center gap-8">
-                <div className="w-24 h-24 bg-brand-gray rounded-2xl overflow-hidden border border-black/5 flex-shrink-0">
-                  <img src={p.thumbnail} alt="" className="w-full h-full object-cover" />
-                </div>
-                <div>
-                  <h3 className="font-black text-2xl mb-1 tracking-tight">{p.title}</h3>
-                  <p className="text-[10px] opacity-40 uppercase font-bold tracking-widest">{p.category}</p>
-                </div>
-              </div>
+      {/* Category Tabs */}
+      <div className="flex flex-wrap gap-2 mb-16 border-b border-black/5 pb-8">
+        <button
+          onClick={() => setSelectedCategory("All")}
+          className={`px-8 py-4 rounded-2xl font-bold text-sm transition-all ${
+            selectedCategory === "All" 
+              ? "bg-black text-white shadow-lg" 
+              : "bg-brand-gray text-black/40 hover:text-black"
+          }`}
+        >
+          All Projects
+        </button>
+        {categories.map(cat => (
+          <button
+            key={cat}
+            onClick={() => setSelectedCategory(cat)}
+            className={`px-8 py-4 rounded-2xl font-bold text-sm transition-all ${
+              selectedCategory === cat 
+                ? "bg-black text-white shadow-lg" 
+                : "bg-brand-gray text-black/40 hover:text-black"
+            }`}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {/* Projects List */}
+      <div className="space-y-16">
+        {selectedCategory === "All" ? (
+          Object.entries(groupedProjects).map(([cat, catProjects]) => (
+            <div key={cat} className="space-y-8">
               <div className="flex items-center gap-4">
-                <button
-                  onClick={() => {
-                    setEditingProject(p);
-                    setIsAdding(false);
-                  }}
-                  className="p-4 hover:bg-brand-gray rounded-2xl transition-colors text-black/40 hover:text-black"
-                  title="Edit"
-                >
-                  <Edit2 size={24} />
-                </button>
-                <button
-                  onClick={() => handleDelete(p.id)}
-                  className="p-4 hover:bg-red-50 text-black/20 hover:text-red-500 rounded-2xl transition-colors"
-                  title="Delete"
-                >
-                  <Trash2 size={24} />
-                </button>
+                <Folder size={20} className="opacity-20" />
+                <h2 className="text-2xl font-black tracking-tight">{cat}</h2>
+                <span className="bg-brand-gray px-3 py-1 rounded-full text-[10px] font-bold opacity-40">{catProjects.length}</span>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                {catProjects.map((p) => (
+                  <ProjectRow 
+                    key={p.id} 
+                    project={p} 
+                    onEdit={() => { setEditingProject(p); setIsAdding(false); }} 
+                    onDelete={() => handleDelete(p.id)} 
+                  />
+                ))}
               </div>
             </div>
           ))
+        ) : (
+          <div className="space-y-8">
+            <div className="flex items-center gap-4">
+              <Folder size={20} className="opacity-20" />
+              <h2 className="text-2xl font-black tracking-tight">{selectedCategory}</h2>
+              <span className="bg-brand-gray px-3 py-1 rounded-full text-[10px] font-bold opacity-40">{filteredProjects.length}</span>
+            </div>
+            <div className="grid grid-cols-1 gap-4">
+              {filteredProjects.length === 0 ? (
+                <div className="py-32 text-center bg-brand-gray rounded-[32px] border-2 border-dashed border-black/5">
+                  <p className="opacity-40 font-bold uppercase text-xs tracking-widest">No projects in this category</p>
+                </div>
+              ) : (
+                filteredProjects.map((p) => (
+                  <ProjectRow 
+                    key={p.id} 
+                    project={p} 
+                    onEdit={() => { setEditingProject(p); setIsAdding(false); }} 
+                    onDelete={() => handleDelete(p.id)} 
+                  />
+                ))
+              )}
+            </div>
+          </div>
         )}
       </div>
 
+      {/* Modal - Reusing the refined modal from previous turn */}
       {editingProject && (
         <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 md:p-10">
           <div className="bg-white w-full max-w-6xl max-h-[90vh] overflow-y-auto rounded-[40px] p-10 md:p-16 shadow-2xl relative">
@@ -295,7 +339,7 @@ export default function Admin() {
                       onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value as Category })}
                       className="w-full p-6 bg-brand-gray rounded-2xl focus:outline-none focus:ring-2 ring-black/5 font-medium text-lg appearance-none cursor-pointer"
                     >
-                      {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                      {categories.map(c => <option key={c} value={c}>{c}</option>)}
                     </select>
                     <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-40">
                       <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -457,6 +501,45 @@ export default function Admin() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+interface ProjectRowProps {
+  project: Project;
+  onEdit: () => void;
+  onDelete: () => void | Promise<void>;
+  key?: React.Key;
+}
+
+function ProjectRow({ project, onEdit, onDelete }: ProjectRowProps) {
+  return (
+    <div className="bg-white p-8 rounded-[32px] border border-black/5 flex items-center justify-between group hover:shadow-xl transition-all duration-300">
+      <div className="flex items-center gap-8">
+        <div className="w-24 h-24 bg-brand-gray rounded-2xl overflow-hidden border border-black/5 flex-shrink-0">
+          <img src={project.thumbnail} alt="" className="w-full h-full object-cover" />
+        </div>
+        <div>
+          <h3 className="font-black text-2xl mb-1 tracking-tight">{project.title}</h3>
+          <p className="text-[10px] opacity-40 uppercase font-bold tracking-widest">{project.category}</p>
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <button
+          onClick={onEdit}
+          className="p-4 hover:bg-brand-gray rounded-2xl transition-colors text-black/40 hover:text-black"
+          title="Edit"
+        >
+          <Edit2 size={24} />
+        </button>
+        <button
+          onClick={onDelete}
+          className="p-4 hover:bg-red-50 text-black/20 hover:text-red-500 rounded-2xl transition-colors"
+          title="Delete"
+        >
+          <Trash2 size={24} />
+        </button>
+      </div>
     </div>
   );
 }
