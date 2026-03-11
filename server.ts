@@ -168,11 +168,16 @@ async function startServer() {
   // API Routes
   app.post("/api/verify-password", (req, res) => {
     const { password } = req.body;
-    // Explicitly default to 180919 if SITE_PASSWORD is not provided or is empty
-    const envPassword = process.env.SITE_PASSWORD;
-    const sitePassword = (envPassword && envPassword.trim() !== "") ? envPassword.trim() : "180919";
     
-    if (password && password.trim() === sitePassword) {
+    // The target password is either from environment variable or the default '180919'
+    let targetPassword = "180919";
+    if (process.env.SITE_PASSWORD && process.env.SITE_PASSWORD.trim() !== "") {
+      targetPassword = process.env.SITE_PASSWORD.trim();
+    }
+    
+    const inputPassword = (password || "").toString().trim();
+    
+    if (inputPassword === targetPassword) {
       res.json({ success: true });
     } else {
       res.status(401).json({ success: false, message: "Incorrect password" });

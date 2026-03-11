@@ -27,7 +27,8 @@ export default function PasswordGate({ children }: PasswordGateProps) {
     setError("");
 
     try {
-      const success = await api.verifyPassword(password);
+      const trimmedPassword = password.trim();
+      const success = await api.verifyPassword(trimmedPassword);
       if (success) {
         localStorage.setItem("site_auth", "true");
         setIsAuthenticated(true);
