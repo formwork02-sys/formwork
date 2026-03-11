@@ -7,6 +7,7 @@ import ProjectDetail from "./components/ProjectDetail";
 import Footer from "./components/Footer";
 import FloatingCallButton from "./components/FloatingCallButton";
 import Admin from "./components/Admin";
+import PasswordGate from "./components/PasswordGate";
 import { api } from "./services/api";
 import { Project } from "./types";
 import { motion, AnimatePresence } from "motion/react";
@@ -178,19 +179,21 @@ function About() {
 
 export default function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <div className="relative">
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/category/:categoryName" element={<CategoryPage />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/admin" element={<Admin />} />
-        </Routes>
-        <Footer />
-        <FloatingCallButton />
-      </div>
-    </Router>
+    <PasswordGate>
+      <Router>
+        <ScrollToTop />
+        <div className="relative">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/category/:categoryName" element={<CategoryPage />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+          <Footer />
+          <FloatingCallButton />
+        </div>
+      </Router>
+    </PasswordGate>
   );
 }
