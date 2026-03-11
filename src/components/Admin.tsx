@@ -32,9 +32,13 @@ export default function Admin() {
       const data = await api.getProjects();
       if (Array.isArray(data)) {
         setProjects(data);
+      } else {
+        console.error("API returned non-array data:", data);
+        setProjects([]);
       }
     } catch (error) {
       console.error("Failed to load projects", error);
+      setProjects([]);
     }
   };
 
@@ -214,89 +218,103 @@ export default function Admin() {
       </div>
 
       {editingProject && (
-        <div className="fixed inset-0 z-[200] bg-black/40 backdrop-blur-sm flex items-center justify-center p-6">
-          <div className="bg-white w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 shadow-2xl">
-            <div className="flex justify-between items-center mb-8">
-              <h2 className="text-2xl font-black">{isAdding ? "Add Project" : "Edit Project"}</h2>
-              <button onClick={() => setEditingProject(null)} className="p-2 hover:bg-brand-gray rounded-full">
-                <X size={24} />
+        <div className="fixed inset-0 z-[200] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 md:p-10">
+          <div className="bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-[32px] p-8 md:p-12 shadow-2xl relative">
+            <div className="flex justify-between items-center mb-10">
+              <h2 className="text-3xl font-black tracking-tight">{isAdding ? "Add Project" : "Edit Project"}</h2>
+              <button 
+                onClick={() => setEditingProject(null)} 
+                className="p-2 hover:bg-brand-gray rounded-full transition-colors"
+              >
+                <X size={28} />
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-4">
+            <form onSubmit={handleSave} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+              {/* Left Column */}
+              <div className="space-y-8">
                 <div>
-                  <label className="text-xs uppercase font-bold opacity-40 mb-2 block">Title</label>
+                  <label className="text-[10px] uppercase font-bold opacity-40 mb-3 block tracking-widest">Title</label>
                   <input
                     required
-                    value={editingProject.title}
+                    value={editingProject.title || ""}
                     onChange={(e) => setEditingProject({ ...editingProject, title: e.target.value })}
-                    className="w-full p-4 bg-brand-gray rounded-xl focus:outline-none focus:ring-2 ring-black/5"
+                    className="w-full p-5 bg-brand-gray rounded-2xl focus:outline-none focus:ring-2 ring-black/5 font-medium"
+                    placeholder="Project Title"
                   />
                 </div>
+
                 <div>
-                  <label className="text-xs uppercase font-bold opacity-40 mb-2 block">Category</label>
+                  <label className="text-[10px] uppercase font-bold opacity-40 mb-3 block tracking-widest">Category</label>
                   <select
-                    value={editingProject.category}
+                    value={editingProject.category || "Logo Design"}
                     onChange={(e) => setEditingProject({ ...editingProject, category: e.target.value as Category })}
-                    className="w-full p-4 bg-brand-gray rounded-xl focus:outline-none focus:ring-2 ring-black/5"
+                    className="w-full p-5 bg-brand-gray rounded-2xl focus:outline-none focus:ring-2 ring-black/5 font-medium appearance-none cursor-pointer"
                   >
                     {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
+
                 <div>
-                  <label className="text-xs uppercase font-bold opacity-40 mb-2 block">Thumbnail</label>
+                  <label className="text-[10px] uppercase font-bold opacity-40 mb-3 block tracking-widest">Thumbnail</label>
                   <div className="space-y-4">
                     {editingProject.thumbnail && (
-                      <img src={editingProject.thumbnail} alt="Thumbnail preview" className="w-32 h-32 object-cover rounded-xl border border-black/5" />
+                      <div className="w-40 h-40 rounded-2xl overflow-hidden border border-black/5 bg-brand-gray">
+                        <img src={editingProject.thumbnail} alt="Preview" className="w-full h-full object-cover" />
+                      </div>
                     )}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={async (e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setEditingProject({ ...editingProject, thumbnail: reader.result as string });
-                          };
-                          reader.readAsDataURL(file as Blob);
-                        }
-                      }}
-                      className="w-full p-4 bg-brand-gray rounded-xl focus:outline-none focus:ring-2 ring-black/5 text-sm"
-                    />
-                    <div className="flex items-center gap-2">
-                      <span className="text-[10px] opacity-40 uppercase font-bold">Or URL:</span>
+                    <div className="relative">
                       <input
-                        value={editingProject.thumbnail}
+                        type="file"
+                        accept="image/*"
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                              setEditingProject({ ...editingProject, thumbnail: reader.result as string });
+                            };
+                            reader.readAsDataURL(file as Blob);
+                          }
+                        }}
+                        className="w-full p-5 bg-brand-gray rounded-2xl focus:outline-none focus:ring-2 ring-black/5 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-black file:text-white hover:file:bg-black/80 cursor-pointer"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] opacity-40 uppercase font-bold tracking-widest whitespace-nowrap">Or URL:</span>
+                      <input
+                        value={editingProject.thumbnail || ""}
                         onChange={(e) => setEditingProject({ ...editingProject, thumbnail: e.target.value })}
-                        placeholder="https://..."
-                        className="flex-1 p-2 bg-brand-gray rounded-lg text-xs focus:outline-none"
+                        placeholder="https://images.unsplash.com/..."
+                        className="flex-1 p-3 bg-brand-gray rounded-xl text-xs focus:outline-none focus:ring-2 ring-black/5"
                       />
                     </div>
                   </div>
                 </div>
+
                 <div>
-                  <label className="text-xs uppercase font-bold opacity-40 mb-2 block">Project Images (Multiple)</label>
+                  <label className="text-[10px] uppercase font-bold opacity-40 mb-3 block tracking-widest">Project Images (Multiple)</label>
                   <div className="space-y-4">
-                    <div className="grid grid-cols-3 gap-2">
-                      {editingProject.images?.map((img, idx) => (
-                        <div key={idx} className="relative group aspect-video">
-                          <img src={img} alt="" className="w-full h-full object-cover rounded-lg border border-black/5" />
-                          <button
-                            type="button"
-                            onClick={() => {
-                              const newImages = [...(editingProject.images || [])];
-                              newImages.splice(idx, 1);
-                              setEditingProject({ ...editingProject, images: newImages });
-                            }}
-                            className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <X size={12} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
+                    {editingProject.images && editingProject.images.length > 0 && (
+                      <div className="grid grid-cols-4 gap-3">
+                        {editingProject.images.map((img, idx) => (
+                          <div key={idx} className="relative group aspect-square rounded-xl overflow-hidden border border-black/5 bg-brand-gray">
+                            <img src={img} alt="" className="w-full h-full object-cover" />
+                            <button
+                              type="button"
+                              onClick={() => {
+                                const newImages = [...(editingProject.images || [])];
+                                newImages.splice(idx, 1);
+                                setEditingProject({ ...editingProject, images: newImages });
+                              }}
+                              className="absolute top-1 right-1 p-1 bg-black text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X size={10} />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
                     <input
                       type="file"
                       accept="image/*"
@@ -315,54 +333,65 @@ export default function Admin() {
                         }
                         setEditingProject({ ...editingProject, images: newImages });
                       }}
-                      className="w-full p-4 bg-brand-gray rounded-xl focus:outline-none focus:ring-2 ring-black/5 text-sm"
+                      className="w-full p-5 bg-brand-gray rounded-2xl focus:outline-none focus:ring-2 ring-black/5 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-black file:text-white hover:file:bg-black/80 cursor-pointer"
                     />
                   </div>
                 </div>
+
                 <div>
-                  <label className="text-xs uppercase font-bold opacity-40 mb-2 block">Description</label>
+                  <label className="text-[10px] uppercase font-bold opacity-40 mb-3 block tracking-widest">Description</label>
                   <textarea
                     required
-                    value={editingProject.description}
+                    value={editingProject.description || ""}
                     onChange={(e) => setEditingProject({ ...editingProject, description: e.target.value })}
-                    className="w-full p-4 bg-brand-gray rounded-xl h-32 focus:outline-none focus:ring-2 ring-black/5"
+                    className="w-full p-5 bg-brand-gray rounded-2xl h-48 focus:outline-none focus:ring-2 ring-black/5 font-medium resize-none"
+                    placeholder="Describe the project..."
                   />
                 </div>
               </div>
 
-              <div className="space-y-4">
+              {/* Right Column */}
+              <div className="space-y-8">
                 <div>
-                  <label className="text-xs uppercase font-bold opacity-40 mb-2 block">Client</label>
+                  <label className="text-[10px] uppercase font-bold opacity-40 mb-3 block tracking-widest">Client</label>
                   <input
                     required
-                    value={editingProject.client}
+                    value={editingProject.client || ""}
                     onChange={(e) => setEditingProject({ ...editingProject, client: e.target.value })}
-                    className="w-full p-4 bg-brand-gray rounded-xl focus:outline-none focus:ring-2 ring-black/5"
+                    className="w-full p-5 bg-brand-gray rounded-2xl focus:outline-none focus:ring-2 ring-black/5 font-medium"
+                    placeholder="Client Name"
                   />
                 </div>
+
                 <div>
-                  <label className="text-xs uppercase font-bold opacity-40 mb-2 block">Needs</label>
+                  <label className="text-[10px] uppercase font-bold opacity-40 mb-3 block tracking-widest">Needs</label>
                   <textarea
                     required
-                    value={editingProject.needs}
+                    value={editingProject.needs || ""}
                     onChange={(e) => setEditingProject({ ...editingProject, needs: e.target.value })}
-                    className="w-full p-4 bg-brand-gray rounded-xl h-24 focus:outline-none focus:ring-2 ring-black/5"
+                    className="w-full p-5 bg-brand-gray rounded-2xl h-48 focus:outline-none focus:ring-2 ring-black/5 font-medium resize-none"
+                    placeholder="What were the client's requirements?"
                   />
                 </div>
+
                 <div>
-                  <label className="text-xs uppercase font-bold opacity-40 mb-2 block">Solution</label>
+                  <label className="text-[10px] uppercase font-bold opacity-40 mb-3 block tracking-widest">Solution</label>
                   <textarea
                     required
-                    value={editingProject.solution}
+                    value={editingProject.solution || ""}
                     onChange={(e) => setEditingProject({ ...editingProject, solution: e.target.value })}
-                    className="w-full p-4 bg-brand-gray rounded-xl h-24 focus:outline-none focus:ring-2 ring-black/5"
+                    className="w-full p-5 bg-brand-gray rounded-2xl h-48 focus:outline-none focus:ring-2 ring-black/5 font-medium resize-none"
+                    placeholder="How did you solve the problem?"
                   />
                 </div>
               </div>
 
-              <div className="md:col-span-2 pt-6 border-t border-black/5 flex justify-end">
-                <button className="flex items-center gap-2 bg-black text-white px-8 py-4 rounded-2xl font-bold hover:opacity-80 transition-opacity">
-                  <Save size={20} /> Save Changes
+              <div className="md:col-span-2 pt-10 mt-4 border-t border-black/5 flex justify-end">
+                <button 
+                  type="submit"
+                  className="flex items-center gap-3 bg-black text-white px-10 py-5 rounded-2xl font-bold hover:opacity-80 transition-all active:scale-[0.98] shadow-lg shadow-black/10"
+                >
+                  <Save size={22} /> {isAdding ? "Create Project" : "Save Changes"}
                 </button>
               </div>
             </form>
