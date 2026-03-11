@@ -7,10 +7,19 @@ import { Plus, Edit2, Trash2, X, Save, Lock } from "lucide-react";
 export default function Admin() {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [projects, setProjects] = useState<Project[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [editingProject, setEditingProject] = useState<Partial<Project> | null>(null);
   const [isAdding, setIsAdding] = useState(false);
+
+  useEffect(() => {
+    const adminAuth = sessionStorage.getItem("admin_auth");
+    if (adminAuth === "true") {
+      setIsAuthenticated(true);
+    }
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -33,9 +42,15 @@ export default function Admin() {
     e.preventDefault();
     if (password === "1111") {
       setIsAuthenticated(true);
+      sessionStorage.setItem("admin_auth", "true");
     } else {
       alert("Wrong password");
     }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    sessionStorage.removeItem("admin_auth");
   };
 
   const handleDelete = async (id: string) => {
@@ -63,9 +78,17 @@ export default function Admin() {
     loadProjects();
   };
 
-  const filteredProjects = projects.filter(p => 
+  const filteredProjects = (projects || []).filter(p => 
     selectedCategory === "All" || p.category === selectedCategory
   );
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-brand-gray flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-black border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   if (!isAuthenticated) {
     return (
@@ -107,7 +130,15 @@ export default function Admin() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
         <div>
           <h1 className="text-4xl font-black mb-2">Manage Portfolio</h1>
-          <p className="text-sm opacity-40 uppercase font-bold tracking-wider">Dashboard</p>
+          <div className="flex items-center gap-4">
+            <p className="text-sm opacity-40 uppercase font-bold tracking-wider">Dashboard</p>
+            <button 
+              onClick={handleLogout}
+              className="text-[10px] uppercase font-bold opacity-20 hover:opacity-100 transition-opacity"
+            >
+              Logout
+            </button>
+          </div>
         </div>
         <div className="flex items-center gap-4 w-full md:w-auto">
           <select 
