@@ -34,7 +34,7 @@ if (count.count === 0) {
       id: "1",
       title: "EcoSphere Identity",
       category: "Logo Design",
-      thumbnail: "https://picsum.photos/seed/logo1/1200/800",
+      thumbnail: "https://images.unsplash.com/photo-1560179707-f14e90ef3623?q=80&w=1200&h=800&auto=format&fit=crop",
       description: "Sustainable tech brand identity focusing on circular economy.",
       client: "EcoSphere Systems",
       needs: "A modern, trust-inspiring logo that conveys sustainability without using clichéd green leaves.",
@@ -42,16 +42,16 @@ if (count.count === 0) {
       colorPalette: ["#000000", "#FFFFFF", "#2D5A27"],
       typography: ["Montserrat Bold", "Inter Regular"],
       images: [
-        "https://picsum.photos/seed/logo1-1/1200/800",
-        "https://picsum.photos/seed/logo1-2/1200/800",
-        "https://picsum.photos/seed/logo1-3/1200/800"
+        "https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1200&h=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?q=80&w=1200&h=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&h=800&auto=format&fit=crop"
       ]
     },
     {
       id: "2",
       title: "Urban Flora Series",
       category: "Illustration",
-      thumbnail: "https://picsum.photos/seed/illu1/1200/800",
+      thumbnail: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1200&h=800&auto=format&fit=crop",
       description: "A series of digital illustrations for a boutique hotel chain.",
       client: "The Grand Urban",
       needs: "Unique graphic motifs to be used across room wallpaper and digital touchpoints.",
@@ -59,15 +59,15 @@ if (count.count === 0) {
       colorPalette: ["#000000", "#FFFFFF"],
       typography: ["Playfair Display"],
       images: [
-        "https://picsum.photos/seed/illu1-1/1200/800",
-        "https://picsum.photos/seed/illu1-2/1200/800"
+        "https://images.unsplash.com/photo-1490750967868-88aa4486c946?q=80&w=1200&h=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1453928582365-b6ad33cbcf64?q=80&w=1200&h=800&auto=format&fit=crop"
       ]
     },
     {
       id: "3",
       title: "Zenith App Interface",
       category: "CX Design",
-      thumbnail: "https://picsum.photos/seed/cx1/1200/800",
+      thumbnail: "https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=1200&h=800&auto=format&fit=crop",
       description: "Next-gen productivity app focusing on deep work.",
       client: "Zenith Labs",
       needs: "An interface that reduces cognitive load and promotes focus.",
@@ -75,15 +75,15 @@ if (count.count === 0) {
       colorPalette: ["#F2F2F2", "#000000", "#FFFFFF"],
       typography: ["Montserrat", "Pretendard"],
       images: [
-        "https://picsum.photos/seed/cx1-1/1200/800",
-        "https://picsum.photos/seed/cx1-2/1200/800"
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&h=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?q=80&w=1200&h=800&auto=format&fit=crop"
       ]
     },
     {
       id: "4",
       title: "Annual Report 2025",
       category: "Print Design",
-      thumbnail: "https://picsum.photos/seed/print1/1200/800",
+      thumbnail: "https://images.unsplash.com/photo-1586717791821-3f44a563eb4c?q=80&w=1200&h=800&auto=format&fit=crop",
       description: "Comprehensive annual report design for a global logistics firm.",
       client: "LogiCorp Global",
       needs: "Transforming complex data into a readable and visually engaging document.",
@@ -91,15 +91,15 @@ if (count.count === 0) {
       colorPalette: ["#000000", "#FFFFFF", "#E5E5E5"],
       typography: ["Montserrat Bold", "Noto Sans KR"],
       images: [
-        "https://picsum.photos/seed/print1-1/1200/800",
-        "https://picsum.photos/seed/print1-2/1200/800"
+        "https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=1200&h=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=1200&h=800&auto=format&fit=crop"
       ]
     },
     {
       id: "5",
       title: "Summer Campaign 2025",
       category: "Ad Design",
-      thumbnail: "https://picsum.photos/seed/ad1/1200/800",
+      thumbnail: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?q=80&w=1200&h=800&auto=format&fit=crop",
       description: "Social media and OOH campaign for a luxury fashion brand.",
       client: "Aura Couture",
       needs: "High-impact visuals that stand out in a crowded digital landscape.",
@@ -107,15 +107,15 @@ if (count.count === 0) {
       colorPalette: ["#000000", "#FFFFFF"],
       typography: ["Montserrat Black"],
       images: [
-        "https://picsum.photos/seed/ad1-1/1200/800",
-        "https://picsum.photos/seed/ad1-2/1200/800"
+        "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200&h=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1441984969813-91c7950fe460?q=80&w=1200&h=800&auto=format&fit=crop"
       ]
     },
     {
       id: "6",
       title: "Pure Essence Skincare",
       category: "Package Design",
-      thumbnail: "https://picsum.photos/seed/pack1/1200/800",
+      thumbnail: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=1200&h=800&auto=format&fit=crop",
       description: "Minimalist packaging for an organic skincare line.",
       client: "Pure Essence",
       needs: "Packaging that reflects the purity and simplicity of the ingredients.",
@@ -123,15 +123,15 @@ if (count.count === 0) {
       colorPalette: ["#FFFFFF", "#000000"],
       typography: ["Montserrat Light"],
       images: [
-        "https://picsum.photos/seed/pack1-1/1200/800",
-        "https://picsum.photos/seed/pack1-2/1200/800"
+        "https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=1200&h=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1570172619380-4101750c55ee?q=80&w=1200&h=800&auto=format&fit=crop"
       ]
     },
     {
       id: "7",
       title: "Formwork Stationery",
       category: "Business Card",
-      thumbnail: "https://picsum.photos/seed/card1/1200/800",
+      thumbnail: "https://images.unsplash.com/photo-1589330694653-ded6df03f754?q=80&w=1200&h=800&auto=format&fit=crop",
       description: "Personal branding and stationery for formwork.",
       client: "Self",
       needs: "A business card that feels like a piece of architecture.",
@@ -139,8 +139,8 @@ if (count.count === 0) {
       colorPalette: ["#000000", "#FFFFFF"],
       typography: ["Montserrat Bold"],
       images: [
-        "https://picsum.photos/seed/card1-1/1200/800",
-        "https://picsum.photos/seed/card1-2/1200/800"
+        "https://images.unsplash.com/photo-1598232806080-686373e8c9ea?q=80&w=1200&h=800&auto=format&fit=crop",
+        "https://images.unsplash.com/photo-1586075010633-2448c3d835f9?q=80&w=1200&h=800&auto=format&fit=crop"
       ]
     }
   ];
