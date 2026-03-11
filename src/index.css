@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+
+@theme {
+  --font-sans: "Pretendard Variable", "Pretendard", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  --font-display: "Pretendard Variable", "Pretendard", sans-serif;
+  --font-body: "Pretendard Variable", "Pretendard", sans-serif;
+
+  --color-brand-black: #000000;
+  --color-brand-white: #FFFFFF;
+  --color-brand-gray: #F2F2F2;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-white text-brand-black font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-sans font-bold;
+  }
+}
+
+.behance-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+@media (max-width: 640px) {
+  .behance-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+
+.hover-reveal {
+  @apply absolute inset-0 bg-black/60 opacity-0 transition-opacity duration-300 flex flex-col justify-end p-8 text-white;
+}
+
+.group:hover .hover-reveal {
+  @apply opacity-100;
+}
