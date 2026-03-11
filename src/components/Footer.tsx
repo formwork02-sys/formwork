@@ -34,7 +34,7 @@ export default function Footer() {
             <p className="text-xs opacity-40 uppercase">
               © 2026 formwork. All Rights Reserved.
             </p>
-            <Link to="/admin" className="text-[10px] opacity-10 hover:opacity-100 transition-opacity uppercase">
+            <Link to="/admin" className="text-[10px] opacity-20 hover:opacity-100 transition-opacity uppercase py-2">
               Admin
             </Link>
           </div>
