@@ -167,20 +167,29 @@ async function startServer() {
 
   // API Routes
   app.post("/api/verify-password", (req, res) => {
-    const { password } = req.body;
-    
-    // The target password is either from environment variable or the default '180919'
-    let targetPassword = "180919";
-    if (process.env.SITE_PASSWORD && process.env.SITE_PASSWORD.trim() !== "") {
-      targetPassword = process.env.SITE_PASSWORD.trim();
-    }
-    
-    const inputPassword = (password || "").toString().trim();
-    
-    if (inputPassword === targetPassword) {
-      res.json({ success: true });
-    } else {
-      res.status(401).json({ success: false, message: "Incorrect password" });
+    try {
+      const { password } = req.body;
+      
+      // Default fallback password
+      const DEFAULT_PASSWORD = "180919";
+      
+      // Get password from environment variable if it exists and is not empty
+      const envPassword = (process.env.SITE_PASSWORD || "").trim();
+      const targetPassword = envPassword !== "" ? envPassword : DEFAULT_PASSWORD;
+      
+      // Clean the input password
+      const inputPassword = (password || "").toString().trim();
+      
+      console.log(`Auth attempt with: "${inputPassword}" against target`);
+      
+      if (inputPassword === targetPassword) {
+        return res.json({ success: true });
+      } else {
+        return res.status(401).json({ success: false, message: "Incorrect password" });
+      }
+    } catch (error) {
+      console.error("Password verification error:", error);
+      return res.status(500).json({ success: false, message: "Server error" });
     }
   });
 
