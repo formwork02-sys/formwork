@@ -42,8 +42,8 @@ export default function PasswordGate({ children }: PasswordGateProps) {
           </div>
         </div>
         
-        <h1 className="text-3xl font-black mb-2 tracking-tighter">formwork</h1>
-        <p className="text-black/40 text-sm mb-8 uppercase tracking-widest font-bold">Protected Access</p>
+        <h1 className="text-[34.5px] font-black mb-1 tracking-normal">formwork</h1>
+        <p className="text-black/40 text-xs mb-8 uppercase tracking-normal font-bold">Protected Access</p>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
@@ -52,7 +52,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter Password"
-              className={`w-full px-6 py-4 bg-brand-gray rounded-xl border-2 transition-all outline-none text-center text-xl font-bold ${
+              className={`w-full px-6 py-4 bg-brand-gray rounded-xl border-2 transition-all outline-none text-center text-lg font-bold tracking-normal ${
                 error ? "border-red-500 animate-shake" : "border-transparent focus:border-black"
               }`}
               autoFocus
@@ -60,18 +60,18 @@ export default function PasswordGate({ children }: PasswordGateProps) {
           </div>
           
           {error && (
-            <p className="text-red-500 text-sm font-bold">Incorrect password. Please try again.</p>
+            <p className="text-red-500 text-xs font-bold tracking-normal">Incorrect password. Please try again.</p>
           )}
 
           <button
             type="submit"
-            className="w-full py-4 bg-black text-white rounded-xl font-bold hover:bg-black/90 transition-all active:scale-[0.98]"
+            className="w-full py-4 bg-black text-white rounded-xl font-bold tracking-normal hover:bg-black/90 transition-all active:scale-[0.98]"
           >
             Enter Site
           </button>
         </form>
         
-        <p className="mt-12 text-[10px] text-black/20 uppercase tracking-[0.2em] font-bold">
+        <p className="mt-12 text-[10px] text-black/20 uppercase tracking-normal font-bold">
           &copy; 2026 formwork. all rights reserved.
         </p>
       </div>
