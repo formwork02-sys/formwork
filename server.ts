@@ -166,33 +166,6 @@ async function startServer() {
   app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
   // API Routes
-  app.post("/api/verify-password", (req, res) => {
-    try {
-      const { password } = req.body;
-      
-      // Default fallback password
-      const DEFAULT_PASSWORD = "180919";
-      
-      // Get password from environment variable if it exists and is not empty
-      const envPassword = (process.env.SITE_PASSWORD || "").trim();
-      const targetPassword = envPassword !== "" ? envPassword : DEFAULT_PASSWORD;
-      
-      // Clean the input password
-      const inputPassword = (password || "").toString().trim();
-      
-      console.log(`Auth attempt with: "${inputPassword}" against target`);
-      
-      if (inputPassword === targetPassword) {
-        return res.json({ success: true });
-      } else {
-        return res.status(401).json({ success: false, message: "Incorrect password" });
-      }
-    } catch (error) {
-      console.error("Password verification error:", error);
-      return res.status(500).json({ success: false, message: "Server error" });
-    }
-  });
-
   app.get("/api/projects", (req, res) => {
     const projects = db.prepare("SELECT * FROM projects").all();
     res.json(projects.map(p => ({
