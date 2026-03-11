@@ -8,6 +8,7 @@ export default function Admin() {
   const [password, setPassword] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
   const [editingProject, setEditingProject] = useState<Partial<Project> | null>(null);
   const [isAdding, setIsAdding] = useState(false);
 
@@ -18,8 +19,14 @@ export default function Admin() {
   }, [isAuthenticated]);
 
   const loadProjects = async () => {
-    const data = await api.getProjects();
-    setProjects(data);
+    try {
+      const data = await api.getProjects();
+      if (Array.isArray(data)) {
+        setProjects(data);
+      }
+    } catch (error) {
+      console.error("Failed to load projects", error);
+    }
   };
 
   const handleLogin = (e: FormEvent) => {
@@ -55,6 +62,10 @@ export default function Admin() {
     setIsAdding(false);
     loadProjects();
   };
+
+  const filteredProjects = projects.filter(p => 
+    selectedCategory === "All" || p.category === selectedCategory
+  );
 
   if (!isAuthenticated) {
     return (
@@ -93,59 +104,82 @@ export default function Admin() {
 
   return (
     <div className="min-h-screen pt-32 px-6 pb-24 max-w-6xl mx-auto">
-      <div className="flex justify-between items-center mb-12">
-        <h1 className="text-4xl font-black">Manage Portfolio</h1>
-        <button
-          onClick={() => {
-            setEditingProject({
-              title: "",
-              category: "Logo Design",
-              thumbnail: "",
-              description: "",
-              client: "",
-              needs: "",
-              solution: "",
-              colorPalette: ["#000000", "#FFFFFF"],
-              typography: [""],
-              images: []
-            });
-            setIsAdding(true);
-          }}
-          className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold hover:opacity-80 transition-opacity"
-        >
-          <Plus size={20} /> Add Project
-        </button>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+        <div>
+          <h1 className="text-4xl font-black mb-2">Manage Portfolio</h1>
+          <p className="text-sm opacity-40 uppercase font-bold tracking-wider">Dashboard</p>
+        </div>
+        <div className="flex items-center gap-4 w-full md:w-auto">
+          <select 
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="flex-1 md:flex-none bg-white border border-black/10 px-4 py-3 rounded-xl font-bold text-sm focus:outline-none focus:border-black"
+          >
+            <option value="All">All Categories</option>
+            {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+          </select>
+          <button
+            onClick={() => {
+              setEditingProject({
+                title: "",
+                category: "Logo Design",
+                thumbnail: "",
+                description: "",
+                client: "",
+                needs: "",
+                solution: "",
+                colorPalette: ["#000000", "#FFFFFF"],
+                typography: [""],
+                images: []
+              });
+              setIsAdding(true);
+            }}
+            className="flex items-center gap-2 bg-black text-white px-6 py-3 rounded-xl font-bold hover:opacity-80 transition-opacity whitespace-nowrap"
+          >
+            <Plus size={20} /> Add Project
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
-        {projects.map((p) => (
-          <div key={p.id} className="bg-white p-6 rounded-2xl border border-black/5 flex items-center justify-between group">
-            <div className="flex items-center gap-6">
-              <img src={p.thumbnail} alt="" className="w-20 h-20 object-cover rounded-lg bg-brand-gray" />
-              <div>
-                <h3 className="font-bold text-lg">{p.title}</h3>
-                <p className="text-sm opacity-40 uppercase font-bold">{p.category}</p>
+      <div className="grid grid-cols-1 gap-4">
+        {filteredProjects.length === 0 ? (
+          <div className="py-24 text-center bg-white rounded-3xl border border-dashed border-black/10">
+            <p className="opacity-40 font-bold uppercase text-sm">No projects found in this category</p>
+          </div>
+        ) : (
+          filteredProjects.map((p) => (
+            <div key={p.id} className="bg-white p-6 rounded-2xl border border-black/5 flex items-center justify-between group hover:shadow-lg transition-all">
+              <div className="flex items-center gap-6">
+                <div className="w-20 h-20 bg-brand-gray rounded-xl overflow-hidden border border-black/5">
+                  <img src={p.thumbnail} alt="" className="w-full h-full object-cover" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-lg">{p.title}</h3>
+                  <p className="text-xs opacity-40 uppercase font-bold tracking-wider">{p.category}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setEditingProject(p);
+                    setIsAdding(false);
+                  }}
+                  className="p-3 hover:bg-brand-gray rounded-xl transition-colors"
+                  title="Edit"
+                >
+                  <Edit2 size={20} />
+                </button>
+                <button
+                  onClick={() => handleDelete(p.id)}
+                  className="p-3 hover:bg-red-50 text-red-500 rounded-xl transition-colors"
+                  title="Delete"
+                >
+                  <Trash2 size={20} />
+                </button>
               </div>
             </div>
-            <div className="flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
-              <button
-                onClick={() => {
-                  setEditingProject(p);
-                  setIsAdding(false);
-                }}
-                className="p-2 hover:bg-brand-gray rounded-lg transition-colors"
-              >
-                <Edit2 size={20} />
-              </button>
-              <button
-                onClick={() => handleDelete(p.id)}
-                className="p-2 hover:bg-red-50 text-red-500 rounded-lg transition-colors"
-              >
-                <Trash2 size={20} />
-              </button>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
 
       {editingProject && (
