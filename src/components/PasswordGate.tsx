@@ -60,22 +60,32 @@ export default function PasswordGate({ children }: PasswordGateProps) {
           접속을 위해 비밀번호를 입력해주세요.
         </p>
         
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Password"
-            className="w-full p-4 border border-black/10 rounded-xl focus:outline-none focus:border-black transition-colors text-center"
-            autoFocus
-          />
-          {error && <p className="text-red-500 text-xs">{error}</p>}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="relative">
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="비밀번호를 입력하세요"
+              className="w-full p-5 bg-brand-gray border-none rounded-2xl focus:ring-2 focus:ring-black/5 transition-all text-center text-lg font-mono tracking-widest"
+              autoFocus
+            />
+          </div>
+          {error && (
+            <motion.p 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-red-500 text-sm font-medium"
+            >
+              {error}
+            </motion.p>
+          )}
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-black text-white p-4 rounded-xl font-bold hover:opacity-80 transition-opacity disabled:opacity-50"
+            className="w-full bg-black text-white p-5 rounded-2xl font-black text-lg hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl shadow-black/10"
           >
-            {isLoading ? "확인 중..." : "접속하기"}
+            {isLoading ? "확인 중..." : "Enter Site"}
           </button>
         </form>
       </motion.div>

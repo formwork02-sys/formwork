@@ -168,8 +168,8 @@ async function startServer() {
   // API Routes
   app.post("/api/verify-password", (req, res) => {
     const { password } = req.body;
-    const sitePassword = process.env.SITE_PASSWORD || "180919"; // Default password if not set
-    if (password === sitePassword) {
+    const sitePassword = (process.env.SITE_PASSWORD || "180919").trim();
+    if (password && password.trim() === sitePassword) {
       res.json({ success: true });
     } else {
       res.status(401).json({ success: false, message: "Incorrect password" });
