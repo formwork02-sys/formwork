@@ -72,7 +72,7 @@ export default function PasswordGate({ children }: PasswordGateProps) {
         </form>
         
         <p className="mt-12 text-[10px] text-black/20 uppercase tracking-normal font-bold">
-          &copy; 2026 formwork. all rights reserved.
+          &copy; 2026 formwork. All Rights Reserved.
         </p>
       </div>
       

@@ -5,7 +5,6 @@ import Hero from "./components/Hero";
 import ProjectCard from "./components/ProjectCard";
 import ProjectDetail from "./components/ProjectDetail";
 import Footer from "./components/Footer";
-import FloatingCallButton from "./components/FloatingCallButton";
 import Admin from "./components/Admin";
 import PasswordGate from "./components/PasswordGate";
 import { api } from "./services/api";
@@ -191,7 +190,6 @@ export default function App() {
             <Route path="/admin" element={<Admin />} />
           </Routes>
           <Footer />
-          <FloatingCallButton />
         </div>
       </Router>
     </PasswordGate>

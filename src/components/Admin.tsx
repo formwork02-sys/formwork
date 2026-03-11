@@ -2,7 +2,7 @@ import { useState, useEffect, FormEvent } from "react";
 import { Project, Category } from "../types";
 import { api } from "../services/api";
 import { CATEGORIES } from "../constants";
-import { Plus, Edit2, Trash2, X, Save } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Save, Lock } from "lucide-react";
 
 export default function Admin() {
   const [password, setPassword] = useState("");
@@ -58,19 +58,34 @@ export default function Admin() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-brand-gray px-6">
-        <form onSubmit={handleLogin} className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md">
-          <h1 className="text-2xl font-black mb-6">Admin Login</h1>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-4 border border-black/10 rounded-xl mb-4 focus:outline-none focus:border-black"
-          />
-          <button className="w-full bg-black text-white p-4 rounded-xl font-bold hover:opacity-80 transition-opacity">
-            Login
-          </button>
+      <div className="min-h-screen flex items-center justify-center bg-brand-gray px-6 font-sans">
+        <form onSubmit={handleLogin} className="bg-white p-10 rounded-[32px] shadow-2xl w-full max-w-md text-center">
+          <div className="mb-8 flex justify-center">
+            <div className="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center shadow-xl">
+              <Lock size={32} />
+            </div>
+          </div>
+          
+          <h1 className="text-[34.5px] font-black mb-1 tracking-normal">formwork</h1>
+          <p className="text-black/40 text-xs mb-8 uppercase tracking-normal font-bold">Admin Access</p>
+          
+          <div className="space-y-4">
+            <input
+              type="password"
+              placeholder="Admin Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-6 py-4 bg-brand-gray rounded-xl border-2 border-transparent focus:border-black transition-all outline-none text-center text-lg font-bold tracking-normal"
+              autoFocus
+            />
+            <button className="w-full py-4 bg-black text-white rounded-xl font-bold tracking-normal hover:bg-black/90 transition-all active:scale-[0.98]">
+              Login to Dashboard
+            </button>
+          </div>
+          
+          <p className="mt-12 text-[10px] text-black/20 uppercase tracking-normal font-bold">
+            &copy; 2026 formwork. All Rights Reserved.
+          </p>
         </form>
       </div>
     );

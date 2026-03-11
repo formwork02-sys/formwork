@@ -32,7 +32,7 @@ export default function Footer() {
           <span className="text-2xl font-black tracking-tighter">formwork</span>
           <div className="flex flex-col items-center md:items-end gap-2">
             <p className="text-xs opacity-40 uppercase">
-              © 2026 formwork. ALL RIGHTS RESERVED.
+              © 2026 formwork. All Rights Reserved.
             </p>
             <Link to="/admin" className="text-[10px] opacity-10 hover:opacity-100 transition-opacity uppercase">
               Admin
