@@ -31,9 +31,21 @@ function ProjectGrid({ category }: { category?: string }) {
   const loadProjects = async () => {
     try {
       const data = await api.getProjects();
-      setProjects(data);
+      if (Array.isArray(data) && data.length > 0) {
+        setProjects(data);
+      } else {
+        // Fallback to constants if API returns empty or invalid data
+        const { PROJECTS } = await import("./constants");
+        setProjects(PROJECTS);
+      }
     } catch (error) {
-      console.error("Failed to load projects", error);
+      console.error("Failed to load projects, using fallback", error);
+      try {
+        const { PROJECTS } = await import("./constants");
+        setProjects(PROJECTS);
+      } catch (e) {
+        console.error("Critical: Fallback also failed", e);
+      }
     } finally {
       setLoading(false);
     }
