@@ -14,9 +14,13 @@ export default function Admin() {
   const [isAdding, setIsAdding] = useState(false);
 
   useEffect(() => {
-    const adminAuth = sessionStorage.getItem("admin_auth");
-    if (adminAuth === "true") {
-      setIsAuthenticated(true);
+    try {
+      const adminAuth = sessionStorage.getItem("admin_auth");
+      if (adminAuth === "true") {
+        setIsAuthenticated(true);
+      }
+    } catch (error) {
+      console.error("Failed to access session storage", error);
     }
     setIsLoading(false);
   }, []);
@@ -46,7 +50,11 @@ export default function Admin() {
     e.preventDefault();
     if (password === "1111") {
       setIsAuthenticated(true);
-      sessionStorage.setItem("admin_auth", "true");
+      try {
+        sessionStorage.setItem("admin_auth", "true");
+      } catch (error) {
+        console.error("Failed to set session storage", error);
+      }
     } else {
       alert("Wrong password");
     }
@@ -54,7 +62,11 @@ export default function Admin() {
 
   const handleLogout = () => {
     setIsAuthenticated(false);
-    sessionStorage.removeItem("admin_auth");
+    try {
+      sessionStorage.removeItem("admin_auth");
+    } catch (error) {
+      console.error("Failed to remove session storage", error);
+    }
   };
 
   const handleDelete = async (id: string) => {
@@ -83,7 +95,7 @@ export default function Admin() {
   };
 
   const filteredProjects = (projects || []).filter(p => 
-    selectedCategory === "All" || p.category === selectedCategory
+    p && (selectedCategory === "All" || p.category === selectedCategory)
   );
 
   if (isLoading) {
@@ -115,8 +127,12 @@ export default function Admin() {
               onChange={(e) => setPassword(e.target.value)}
               className="w-full px-6 py-4 bg-brand-gray rounded-xl border-2 border-transparent focus:border-black transition-all outline-none text-center text-lg font-bold tracking-normal"
               autoFocus
+              required
             />
-            <button className="w-full py-4 bg-black text-white rounded-xl font-bold tracking-normal hover:bg-black/90 transition-all active:scale-[0.98]">
+            <button 
+              type="submit"
+              className="w-full py-4 bg-black text-white rounded-xl font-bold tracking-normal hover:bg-black/90 transition-all active:scale-[0.98]"
+            >
               Login to Dashboard
             </button>
           </div>

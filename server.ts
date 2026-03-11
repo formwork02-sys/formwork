@@ -167,13 +167,28 @@ async function startServer() {
 
   // API Routes
   app.get("/api/projects", (req, res) => {
-    const projects = db.prepare("SELECT * FROM projects").all();
-    res.json(projects.map(p => ({
-      ...p,
-      colorPalette: JSON.parse(p.colorPalette as string),
-      typography: JSON.parse(p.typography as string),
-      images: JSON.parse(p.images as string)
-    })));
+    try {
+      const projects = db.prepare("SELECT * FROM projects").all();
+      res.json(projects.map(p => {
+        const safeParse = (str: any, fallback: any) => {
+          try {
+            return str ? JSON.parse(str as string) : fallback;
+          } catch (e) {
+            return fallback;
+          }
+        };
+
+        return {
+          ...p,
+          colorPalette: safeParse(p.colorPalette, []),
+          typography: safeParse(p.typography, []),
+          images: safeParse(p.images, [])
+        };
+      }));
+    } catch (error) {
+      console.error("Failed to fetch projects:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   });
 
   app.post("/api/projects", (req, res) => {
